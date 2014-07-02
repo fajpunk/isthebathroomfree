@@ -1,0 +1,7 @@
+{"version":3,
+ "file":
+ "/Users/dfuchs/src/isthebathroomfree/itbf-web/resources/public/out/itbf_web/connect.js",
+ "sources":["connect.cljs"],
+ "lineCount":8,
+ "mappings":";AAAA;;;;AAGA,8BAAA,sBAAA,2DAAA,/GAACA",
+ "names":["weasel.repl/connect"]}

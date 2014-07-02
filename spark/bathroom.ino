@@ -32,9 +32,9 @@ void loop() {
     door_reading = new_door_reading;
     digitalWrite(indicator, door_reading);  
     if (door_reading == HIGH) {
-      send_event("door_closed");
+      send_event("door-closed");
     } else {
-      send_event("door_opened");
+      send_event("door-opened");
     }
   }
 
@@ -56,31 +56,5 @@ int buzzer_off(String blah) {
 }
 
 void send_event(String event) {
-  Serial.println("Sending ");
-  Serial.println(Network.localIP());
-
-  if (client.connect(api, 5000)) {
-    Serial.println(event);
-    Serial.println("Connected to api");
-
-    client.print("GET /api/");
-    client.print(event);
-    client.println(" HTTP/1.1");
-    client.println("User-Agent: sparkcore");
-    client.println("Host: 192.168.0.2:5000");
-    client.println("Accept: */*");
-    client.println("Connection: close");
-    client.println();
-    
-    // Wait for the response
-    while(true) {
-      if (client.available() != 0) {
-        break;
-      }
-    }
-    client.stop();
-    Serial.println("Closed connection");
-  } else {
-    Serial.println("Couldn't connect to api");
-  }
+  Spark.publish(event, NULL, 60, PRIVATE);
 }

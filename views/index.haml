@@ -4,7 +4,11 @@
   %head
     %title Bathroom test
   %body
-    %h2 The bathroom door is:
-    %h1{id: "door_state"}= @state
+    %h2 Is the bathroom free?
+    %h1{id: "door_state"}= @answer
     %script{type: "text/javascript", src: "//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"}
     %script{type: "text/javascript", src: "/index.js"}
+    .buzzer_button
+      %button{onClick: "buzzerOn()"} Time's up!
+    .buzzer_button
+      %button{onClick: "buzzerOff()"} Take your time.
