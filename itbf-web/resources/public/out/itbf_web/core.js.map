@@ -2,6 +2,10 @@
  "file":
  "/Users/dfuchs/src/isthebathroomfree/itbf-web/resources/public/out/itbf_web/core.js",
  "sources":["core.cljs"],
- "lineCount":7,
- "mappings":";AAAA;;AAEA,AAACA;AAED,4BAAA,5BAACC",
- "names":["cljs.core/enable-console-print!", "cljs.core/println"]}
+ "lineCount":11,
+ "mappings":
+ ";AAAA;;AAEA,AAACA;AAED,wBAAA,2BAAA,nDAAMC,0CAASC,SACb,+CAAA,3CAAMC,KAAG,uBAAA,vBAAgBC,sCACvB,AAAMC,YAAWF;AACjB,sBAAA,fAAM,AAAaA;;AAGvB,AAAKG,mBAAG,KAAAC,UAAA;AACR,AAAM,AAAaD,6BAAIL",
+ "names":
+ ["cljs.core/enable-console-print!", "itbf-web.core/testems",
+  "message", "el", "js/document", "js/console", "itbf-web.core/ws",
+  "js/WebSocket"]}

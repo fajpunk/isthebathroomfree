@@ -12,7 +12,11 @@
                  [ring "1.3.0"]
                  [clj-http "0.9.2"]
                  [org.clojure/core.async "0.1.303.0-886421-alpha"]
-                 [environ "0.5.0"]]
+                 [environ "0.5.0"]
+                 [com.taoensso/timbre "3.2.1"]
+                 [com.taoensso/carmine "2.6.2"]
+                 [org.clojars.gjahad/debug-repl "0.3.3"]
+                 [org.clojure/data.json "0.2.5"]]
 
   :main itbf-web.core
   :plugins [[lein-cljsbuild "1.0.3"]

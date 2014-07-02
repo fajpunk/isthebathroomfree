@@ -1,7 +1,9 @@
 (ns itbf-web.spark-event-client
   (:require [clj-http.client :as client]
+            [clojure.data.json :as json]
+            [clojure.string :refer [trim]]
+            [taoensso.timbre :refer [debug info warn error]]
             [clojure.core.async :refer [go go-loop >! <! chan]]))
-
 
 (defn- url [event-name]
   (str "https://api.spark.io/v1/events/" event-name))
@@ -38,6 +40,16 @@
   [event]
   (= (apply str (take-last 2 event)) "\n\n"))
 
+(defn- parse-event
+  "Parse a server-side event into a clojure data structure.  Assume that the
+   data in the event is JSON"
+  [event]
+  (let [matches (re-matches #"\s*event:(.*)\ndata:(.*)\s*" event)
+        event-name (trim (get matches 1 "name-not-found"))
+        event-data (trim (get matches 2 "\"data-not-found\""))]
+    {:event event-name
+     :data (json/read-str event-data)}))
+
 
 (defn subscribe
   "Returns a core.async channel that will have events posted to it.  Will block
@@ -46,7 +58,6 @@
   (let [event-stream (:body (connect event-name access-token))
         event-chan (chan)]
     (init-stream event-stream)
-    (println "Init'd!")
 
     (go-loop [stream event-stream 
               event [] 
@@ -62,7 +73,7 @@
 
           (and receiving (ended? curr-event))
           (do
-            (>! event-chan (apply str curr-event))
+            (>! event-chan (parse-event (apply str curr-event)))
             (recur stream [] false))
 
           (and receiving (not (ended? curr-event)))
