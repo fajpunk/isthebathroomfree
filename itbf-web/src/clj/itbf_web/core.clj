@@ -6,10 +6,14 @@
             [compojure.route :as route]
             [itbf-web.spark-event-client :as client]
             [environ.core :refer [env]]
-            [taoensso.timbre :refer [debug info warn error]]
+            [taoensso.timbre :as timbre]
             [taoensso.carmine :as car]
             [taoensso.sente :as sente]
+            [taoensso.encore :as encore]
+            [clojure.core.match :refer [match]]
             [clojure.core.async :refer [go go-loop >! <! chan alt! alt!!]]))
+
+(timbre/refer-timbre)
 
 (defn in-dev? []
   true)
@@ -39,7 +43,6 @@
   (route/not-found "<p>Page not found.</p>"))
 
 
-
 (defn push-door-state [state]
   (car/wcar nil
             (car/set "itbf:door-state" state))
@@ -52,7 +55,6 @@
 (defonce door-state-broadcaster
   (go
     (while true
-      (debug "choosing...")
       (alt!
         [door-closed-chan] (push-door-state "closed")
         [door-opened-chan] (push-door-state "opened")))))
@@ -61,6 +63,17 @@
 (defn get-door-state []
   (car/wcar nil
             (car/get "itbf:door-state")))
+
+(defn- event-handler
+  [{:as ev-msg :keys [ring-req event ?reply-fn]} _]
+  (let [session (:session ring-req)
+        uid     (:uid session)
+        [id data :as ev] event]
+    (chsk-send! uid
+      [:itbf/door-event {:door-state (get-door-state)}])))
+
+(defonce chsk-router
+  (sente/start-chsk-router-loop! event-handler ch-chsk))
 
 (defn -main [& args]
   (let [handler (if (in-dev?)
