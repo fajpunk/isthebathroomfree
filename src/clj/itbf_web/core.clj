@@ -43,7 +43,7 @@
   (route/not-found "<p>Page not found.</p>"))
 
 
-(def redis-conn {:uri (env :redistogo-url)})
+  (def redis-conn {:spec { :uri (env :redistogo-url)}})
 
 (defn push-door-state [state]
   (car/wcar redis-conn
