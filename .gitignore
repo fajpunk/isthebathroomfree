@@ -1,2 +1,9 @@
-*.bin
+pom.xml
+*jar
+/lib/
+/classes/
+/out/
+/target/
+.lein-*
+profiles.clj
 dump.rdb

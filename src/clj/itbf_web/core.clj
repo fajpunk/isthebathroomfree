@@ -16,7 +16,7 @@
 (timbre/refer-timbre)
 
 (defn in-dev? []
-  true)
+  (= "development" (env :rack-env)))
 
 (declare door-state-handler)
 (declare door-closed)
@@ -43,8 +43,10 @@
   (route/not-found "<p>Page not found.</p>"))
 
 
+(def redis-conn {:uri (env :redistogo-url)})
+
 (defn push-door-state [state]
-  (car/wcar nil
+  (car/wcar redis-conn
             (car/set "itbf:door-state" state))
   (doseq [uid (:any @connected-uids)]
     (chsk-send! uid
@@ -61,7 +63,7 @@
 
 
 (defn get-door-state []
-  (car/wcar nil
+  (car/wcar redis-conn
             (car/get "itbf:door-state")))
 
 (defn- event-handler
