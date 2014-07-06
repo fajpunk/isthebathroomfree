@@ -75,8 +75,8 @@
 (defonce chsk-router
   (sente/start-chsk-router-loop! event-handler ch-chsk))
 
-(defn -main [& args]
+(defn -main [port]
   (let [handler (if (in-dev?)
                   (reload/wrap-reload (site #'all-routes)) ;; only reload when dev
                   (site all-routes))]
-    (run-server handler {:port 8080})))
+    (run-server handler {:port (Integer. port)})))

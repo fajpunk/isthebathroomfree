@@ -4,8 +4,5 @@ pom.xml
 /classes/
 /out/
 /target/
-.lein-deps-sum
-.lein-repl-history
-.lein-plugins/
-.lein-env
+.lein-*
 profiles.clj
