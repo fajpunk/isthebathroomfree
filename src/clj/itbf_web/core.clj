@@ -45,10 +45,10 @@
 (defn- push-door-state [state]
   (car/wcar redis-conn
             (car/set "itbf:door-state" state))
-  (doseq [uid (:any @connected-uids)]
-    (chsk-send! uid
-      [:itbf/door-event
-        {:door-state state}])))
+  (println (str "'" state "'"))
+  (chsk-send! nil
+              [:itbf/door-event
+               {:door-state state}]))
 
 (defn- get-door-state []
   (car/wcar redis-conn

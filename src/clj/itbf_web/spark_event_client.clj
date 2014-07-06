@@ -51,6 +51,9 @@
      :data (json/read-str event-data)}))
 
 
+(defn- curr-event [event next-byte]
+  (conj event (char next-byte)))
+
 (defn subscribe
   "Returns a core.async channel that will have events posted to it.  Will block
    until the event stream is ready to be read from."
@@ -62,20 +65,22 @@
     (go-loop [stream event-stream 
               event [] 
               receiving false]
-      (let [next-char (read-char stream)
-            curr-event (conj event next-char)]
+      (let [next-byte (.read stream)]
         (cond
-          (and (not receiving) (= next-char \newline))
+          (= -1 next-byte)
+          (recur (:body (connect event-name access-token)) [] false)
+
+          (and (not receiving) (= (char next-byte) \newline))
           (recur stream [] false)
 
-          (and (not receiving) (not= next-char \newline))
-          (recur stream curr-event true)
+          (and (not receiving) (not= (char next-byte) \newline))
+          (recur stream (curr-event event next-byte) true)
 
-          (and receiving (ended? curr-event))
+          (and receiving (ended? (curr-event event next-byte)))
           (do
-            (>! event-chan (parse-event (apply str curr-event)))
+            (>! event-chan (parse-event (apply str (curr-event event next-byte))))
             (recur stream [] false))
 
-          (and receiving (not (ended? curr-event)))
-          (recur stream curr-event true))))
+          (and receiving (not (ended? (curr-event event next-byte))))
+          (recur stream (curr-event event next-byte) true))))
     event-chan))
