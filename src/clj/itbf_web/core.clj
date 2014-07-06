@@ -22,9 +22,6 @@
 (declare door-closed)
 (declare door-opened)
 
-(defonce door-closed-chan (client/subscribe "door-closed" (env :spark-access-token)))
-(defonce door-opened-chan (client/subscribe "door-opened" (env :spark-access-token)))
-(debug "Subscribed to spark channels")
 
 (let [{:keys [ch-recv send-fn ajax-post-fn ajax-get-or-ws-handshake-fn
               connected-uids]}
@@ -43,9 +40,9 @@
   (route/not-found "<p>Page not found.</p>"))
 
 
-  (def redis-conn {:spec { :uri (env :redistogo-url)}})
+(def redis-conn {:spec { :uri (env :redistogo-url)}})
 
-(defn push-door-state [state]
+(defn- push-door-state [state]
   (car/wcar redis-conn
             (car/set "itbf:door-state" state))
   (doseq [uid (:any @connected-uids)]
@@ -53,16 +50,7 @@
       [:itbf/door-event
         {:door-state state}])))
 
-
-(defonce door-state-broadcaster
-  (go
-    (while true
-      (alt!
-        [door-closed-chan] (push-door-state "closed")
-        [door-opened-chan] (push-door-state "opened")))))
-
-
-(defn get-door-state []
+(defn- get-door-state []
   (car/wcar redis-conn
             (car/get "itbf:door-state")))
 
@@ -74,10 +62,21 @@
     (chsk-send! uid
       [:itbf/door-event {:door-state (get-door-state)}])))
 
-(defonce chsk-router
-  (sente/start-chsk-router-loop! event-handler ch-chsk))
-
 (defn -main [port]
+  (defonce door-closed-chan (client/subscribe "door-closed" (env :spark-access-token)))
+  (defonce door-opened-chan (client/subscribe "door-opened" (env :spark-access-token)))
+  (debug "Subscribed to spark channels")
+
+  (defonce door-state-broadcaster
+    (go
+      (while true
+        (alt!
+          [door-closed-chan] (push-door-state "closed")
+          [door-opened-chan] (push-door-state "opened")))))
+
+  (defonce chsk-router
+    (sente/start-chsk-router-loop! event-handler ch-chsk))
+
   (let [handler (if (in-dev?)
                   (reload/wrap-reload (site #'all-routes)) ;; only reload when dev
                   (site all-routes))]
