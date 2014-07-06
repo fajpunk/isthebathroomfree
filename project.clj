@@ -2,6 +2,7 @@
   :description "Is the bathroom free?"
   :url "http://isthebathroomfree.com"
   :uberjar-name "itbf-web-standalone.jar"
+  :min-lein-version "2.0.0"
 
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.clojure/clojurescript "0.0-2234"]
