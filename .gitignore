@@ -1,9 +1,9 @@
 pom.xml
 *jar
-/lib/
-/classes/
+/lib
+/classes/*
 /out/
-/target/
+/target/*
 .lein-*
 profiles.clj
 dump.rdb
