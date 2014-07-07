@@ -1,6 +1,7 @@
 (ns itbf-web.door-state
   (:require [taoensso.carmine :as car]
-            [environ.core :refer [env]]))
+            [environ.core :refer [env]])
+  (:refer-clojure :exclude [set get]))
 
 (def redis-conn {:spec { :uri (env :redistogo-url)}})
 (def redis-key "itbf:door-state")
