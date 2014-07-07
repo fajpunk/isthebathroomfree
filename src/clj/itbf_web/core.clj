@@ -5,11 +5,12 @@
             [compojure.core :refer [defroutes GET POST]]
             [compojure.route :as route]
             [itbf-web.spark-event-client :as client]
+            [itbf-web.door-state :as ds]
             [environ.core :refer [env]]
             [taoensso.timbre :as timbre]
-            [taoensso.carmine :as car]
             [taoensso.sente :as sente]
             [taoensso.encore :as encore]
+            [hiccup.core :refer [html]]
             [clojure.core.match :refer [match]]
             [clojure.core.async :refer [go go-loop >! <! chan alt! alt!!]]))
 
@@ -33,26 +34,29 @@
   (def connected-uids connected-uids) ; Watchable, read-only atom
   )
 
+(defn index []
+  (html
+    [:head [:title "Is the bathroom free?"]]
+    [:body
+     [:h2 "The bathroom is:"]
+     [:div#door-state]
+     [:script {:src "out/goog/base.js" :type "text/javascript"}]
+     [:script {:src "itbf_web.js" :type "text/javascript"}]
+     [:script {:type "text/javascript"} "goog.require(\"itbf_web.core\")"]]))
+
 (defroutes all-routes
-  (GET "/" [] "handling-page")
+  (GET "/" [] (index))
   (GET "/chsk" req (ring-ajax-get-or-ws-handshake req))
   (route/resources "/")
   (route/not-found "<p>Page not found.</p>"))
 
 
-(def redis-conn {:spec { :uri (env :redistogo-url)}})
 
 (defn- push-door-state [state]
-  (car/wcar redis-conn
-            (car/set "itbf:door-state" state))
-  (println (str "'" state "'"))
+  (ds/set state)
   (chsk-send! nil
               [:itbf/door-event
                {:door-state state}]))
-
-(defn- get-door-state []
-  (car/wcar redis-conn
-            (car/get "itbf:door-state")))
 
 (defn- event-handler
   [{:as ev-msg :keys [ring-req event ?reply-fn]} _]
@@ -60,7 +64,7 @@
         uid     (:uid session)
         [id data :as ev] event]
     (chsk-send! uid
-      [:itbf/door-event {:door-state (get-door-state)}])))
+      [:itbf/door-event {:door-state (ds/get)}])))
 
 (defn -main [port]
   (defonce door-closed-chan (client/subscribe "door-closed" (env :spark-access-token)))

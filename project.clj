@@ -20,7 +20,8 @@
                  [org.clojars.gjahad/debug-repl "0.3.3"]
                  [com.taoensso/sente  "0.14.1"]
                  [org.clojure/data.json "0.2.5"]
-                 [org.clojure/core.match  "0.2.1"]]
+                 [hiccup "1.0.5"]
+                 [org.clojure/core.match "0.2.1"]]
 
   :main itbf-web.core
   :plugins [[lein-cljsbuild "1.0.3"]
