@@ -13,7 +13,6 @@
             [hiccup.core :refer [html]]
             [clojure.core.match :refer [match]]
             [clojure.core.async :refer [go go-loop >! <! chan alt! alt!!]]))
-
 (timbre/refer-timbre)
 
 (defn in-dev? []
@@ -38,7 +37,7 @@
   (html
     [:head [:title "Is the bathroom free?"]]
     [:body
-     [:h2 "The bathroom is:"]
+     [:h2 "The bathroom door is:"]
      [:div#door-state]
      [:script {:src "out/goog/base.js" :type "text/javascript"}]
      [:script {:src "itbf_web.js" :type "text/javascript"}]
@@ -49,7 +48,6 @@
   (GET "/chsk" req (ring-ajax-get-or-ws-handshake req))
   (route/resources "/")
   (route/not-found "<p>Page not found.</p>"))
-
 
 
 (defn- push-door-state [state]

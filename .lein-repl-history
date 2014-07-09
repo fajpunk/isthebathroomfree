@@ -1,3 +1,191 @@
 (env :spark-access-token)
 (env :blah)
 REDISTOGO_URL=redis://redistogo:6edb836d4d0e5ef1b41c5eea7a39089b@angelfish.redistogo.com:9639/
+(def grammar "stream        = [ bom ] *event
+event         = *( comment / field ) end-of-line
+comment       = colon *any-char end-of-line
+field         = 1*name-char [ colon [ space ] *any-char ] end-of-line
+end-of-line   = ( cr lf / cr / lf / eof )
+eof           = < matches repeatedly at the end of the stream >
+; characters
+lf            = %x000A ; U+000A LINE FEED (LF)
+cr            = %x000D ; U+000D CARRIAGE RETURN (CR)
+space         = %x0020 ; U+0020 SPACE
+colon         = %x003A ; U+003A COLON (:)
+bom           = %xFEFF ; U+FEFF BYTE ORDER MARK
+name-char     = %x0000-0009 / %x000B-000C / %x000E-0039 / %x003B-10FFFF
+                ; a Unicode character other than U+000A LINE FEED (LF), U+000D CARRIAGE RETURN (CR), or U+003A COLON (:)
+any-char      = %x0000-0009 / %x000B-000C / %x000E-10FFFF
+                ; a Unicode character other than U+000A LINE FEED (LF) or U+000D CARRIAGE RETURN (CR)"
+)
+grammar
+(def grammar "stream        = [ bom ] *event\nevent         = *( comment / field ) end-of-line\ncomment       = colon *any-char end-of-line\nfield         = 1*name-char [ colon [ space ] *any-char ] end-of-line\nend-of-line   = ( cr lf / cr / lf / eof )\neof           = < matches repeatedly at the end of the stream >\n\n; characters\nlf            = %x000A ; U+000A LINE FEED (LF)\ncr            = %x000D ; U+000D CARRIAGE RETURN (CR)\nspace         = %x0020 ; U+0020 SPACE\ncolon         = %x003A ; U+003A COLON (:)\nbom           = %xFEFF ; U+FEFF BYTE ORDER MARK\nname-char     = %x0000-0009 / %x000B-000C / %x000E-0039 / %x003B-10FFFF\n                ; a Unicode character other than U+000A LINE FEED (LF), U+000D CARRIAGE RETURN (CR), or U+003A COLON (:)\nany-char      = %x0000-0009 / %x000B-000C / %x000E-10FFFF\n                ; a Unicode character other than U+000A LINE FEED (LF) or U+000D CARRIAGE RETURN (CR)")
+(require '[instaparse.core :as i]')
+(require '[instaparse.core :as i])
+(def parser (i/parser grammar))
+grammar
+(def parser (i/parser grammar))
+(def parser (i/parser grammar) :input-format :abnf)
+(def parser (i/parser grammar :input-format :abnf))
+(def grammar "stream        = *event\nevent         = *( comment / field ) end-of-line\ncomment       = colon *any-char end-of-line\nfield         = 1*name-char [ colon [ space ] *any-char ] end-of-line\nend-of-line   = ( cr lf / cr / lf / eof )\neof           = < matches repeatedly at the end of the stream >\n\n; characters\nlf            = %x000A ; U+000A LINE FEED (LF)\ncr            = %x000D ; U+000D CARRIAGE RETURN (CR)\nspace         = %x0020 ; U+0020 SPACE\ncolon         = %x003A ; U+003A COLON (:)\nname-char     = %x0000-0009 / %x000B-000C / %x000E-0039 / %x003B-10FFFF\n                ; a Unicode character other than U+000A LINE FEED (LF), U+000D CARRIAGE RETURN (CR), or U+003A COLON (:)\nany-char      = %x0000-0009 / %x000B-000C / %x000E-10FFFF\n                ; a Unicode character other than U+000A LINE FEED (LF) or U+000D CARRIAGE RETURN (CR)")
+(def parser (i/parser grammar :input-format :abnf))
+(def grammar "stream        = [ bom ] *event\nevent         = *( comment / field ) end-of-line\ncomment       = colon *any-char end-of-line\nfield         = 1*name-char [ colon [ space ] *any-char ] end-of-line\nend-of-line   = ( cr lf / cr / lf / eof )\neof           = < matches repeatedly at the end of the stream >\n\n; characters\nlf            = %x000A ; U+000A LINE FEED (LF)\ncr            = %x000D ; U+000D CARRIAGE RETURN (CR)\nspace         = %x0020 ; U+0020 SPACE\ncolon         = %x003A ; U+003A COLON (:)\nbom           = %xFEFF ; U+FEFF BYTE ORDER MARK\nname-char     = %x0000-0009 / %x000B-000C / %x000E-0039 / %x003B-10FFFF\n                ; a Unicode character other than U+000A LINE FEED (LF), U+000D CARRIAGE RETURN (CR), or U+003A COLON (:)\nany-char      = %x0000-0009 / %x000B-000C / %x000E-10FFFF\n                ; a Unicode character other than U+000A LINE FEED (LF) or U+000D CARRIAGE RETURN (CR)")
+grammar
+(binding [instaparse.abnf/*case-insensitive* true] (def parser (i/parser grammar :input-format :abnf)))
+(def grammar "stream        = [ bom ] *event\\nevent         = *( comment / field ) end-of-line\\ncomment       = colon *any-char end-of-line\\nfield         = 1*name-char [ colon [ space ] *any-char ] end-of-line\\nend-of-line   = ( cr lf / cr / lf / eof )\\neof           = < matches repeatedly at the end of the stream >\\n\\n; characters\\nlf            = %x000A ; U+000A LINE FEED (LF)\\ncr            = %x000D ; U+000D CARRIAGE RETURN (CR)\\nspace         = %x0020 ; U+0020 SPACE\\ncolon         = %x003A ; U+003A COLON (:)\\nbom           = %xFEFF ; U+FEFF BYTE ORDER MARK\\nname-char     = %x0000-0009 / %x000B-000C / %x000E-0039 / %x003B-10FFFF\\n                ; a Unicode character other than U+000A LINE FEED (LF), U+000D CARRIAGE RETURN (CR), or U+003A COLON (:)\\nany-char      = %x0000-0009 / %x000B-000C / %x000E-10FFFF\\n                ; a Unicode character other than U+000A LINE FEED (LF) or U+000D CARRIAGE RETURN (CR)")
+(binding [instaparse.abnf/*case-insensitive* true] (def parser (i/parser grammar :input-format :abnf)))
+(binding [instaparse.abnf/*case-insensitive* true] (def parser (i/parser "grammar.txt" :input-format :abnf)))
+(def parser (i/parser "grammar.txt" :input-format :abnf))
+(def event "event: door-closed
+data: {\"data\":\"null\",\"ttl\":\"60\",\"published_at\":\"2014-07-07T02:53:33.247Z\",\"coreid\":\"53ff6d065075535130561487\"}
+"
+)
+event
+parser
+(parser event)
+(:stream (:event (parser event)))
+(def event2 "event: door-closed
+data: {\"data\":\"null\",\"ttl\":\"60\",\"published_at\":\"2014-07-07T02:53:33.247Z\",\"coreid\":\"53ff6d065075535130561487\"}")
+event2
+(parser event2)
+(def event3 "event: door-closed
+data: {\"data\":\"null\",\"ttl\":\"60\",\"published_at\":\"2014-07-07T02:53:33.247Z\",\"coreid\":\"53ff6d065075535130561487\"}
+")
+(parser event3)
+(def event5 "
+event: door-closed
+data: {\"data\":\"null\",\"ttl\":\"60\",\"published_at\":\"2014-07-07T02:53:33.247Z\",\"coreid\":\"53ff6d065075535130561487\"}
+event: door-closed
+data: {\"data\":\"null\",\"ttl\":\"60\",\"published_at\":\"2014-07-07T02:53:33.247Z\",\"coreid\":\"53ff6d065075535130561487\"}
+")
+(parser event5)
+(i/parses parser event5)
+(i/parses parser event4)
+(i/parses parser event3)
+(i/parses parser event)
+(i/parses parser event5)
+(def ptree (i/parses parser event))
+ptree
+(i/transform {:event (fn [ & chars] (println chars)))
+(i/transform {:event (fn [ & chars] (println chars))})
+(i/transform {:event (fn [ &chars] (println chars))})
+(i/transform {:event (fn [ &chars] (println chars))} ptree)
+(i/transform {:event (fn [ &chars] [chars])} ptree)
+(i/transform {:event (fn [ & chars] [chars])} ptree)
+(i/transform {:event (fn [ & chars] (count chars))} ptree)
+(i/transform {:field (fn [ & chars] (count chars))} ptree)
+(read-string "10FFFF")
+(read-string "0x10FFFF")
+(char 1114111)
+(char 111411)
+(char 11141)
+(char 11150)
+(def c (Character. (read-string "0x10FFFF")))
+(Character/MAX_CODE_POINT)
+(.toChars Character. (read-string "0x10FFFF))
+(.toChars Character. (read-string "0x10FFFF"))
+(.toChars Character. )
+(.toChars (Character.) (read-string "0x10FFFF"))
+(.toChars (Character.))
+(.toChars (Character))
+(.toChars Character)
+(Character/toChars)
+(Character/toChars 1114111)
+(char (Character/toChars 1114111))
+(char 1114111)
+(Integer/parseInt 1114111)
+(Integer/parseInt "1114111")
+(Integer/parseInt "0x10FFFF")
+(Integer/parseInt "1114111")
+(read-string "0xFFFF")
+(def parser (i/parser "grammar.txt" :input-format :abnf))
+(parser event)
+(def event2 "
+event: door-closed
+data: {\"data\":\"null\",\"ttl\":\"60\",
+data: \"published_at\":\"2014-07-07T02:53:33.247Z\",\"coreid\":\"53ff6d065075535130561487\"}
+"
+)
+(parse event2)
+(parser event2)
+client
+(in-ns itbf-web.spark-event-client
+)
+(in-ns 'itbf-web.spark-event-client
+)
+client
+(reload)
+(:reload)
+(:reload *ns*)
+client
+(require '[clj-http.client :as client[)
+(require '[clj-http.client :as client])
+client
+(in-ns 'itbf-web.spark-event-client)
+client
+(client/get)
+(def stream (client/get "http://google.com"))
+stream
+(def stream (client/get "http://google.com" :as :stream))
+(def stream (client/get "http://google.com" {:as :stream}))
+stream
+(type stream)
+(type {:body stream})
+(type (:body stream))
+(:body stream)
+(def st (:body stream))
+(.available st)
+(def rd (reader st))
+(require '[clojure.java.io :refer [reader]])
+(def rd (reader st))
+rd
+(.readLine rd)
+(.close rd)
+rd
+(def stream (client/get "https://api.spark.io/v1/events/door-closed" {:as :stream :headers {"Authorization" "Bearer 792e2af48ebcc516b6ec5d28b99bfb677933fe27"}})
+)
+(def rd (reader (:body stream)))
+(.readLine rd)
+(first "blah")
+\:
+(empty? "")
+(empty? "\n")
+(split)
+(require 'clojure.string :refer split)
+(require '[clojure.string :refer [split]])
+split
+(split "blah:blah:blah:blah" #":")
+(split "blah:blah:blah:blah" #":" 1)
+(split "blah:blah:blah:blah" #":" 2)
+(split "blah:ablah:bblah:cblah" #":" 2)
+(split "blah:ablah:bblah:cblah\n" #":" 2)
+(rest "blah")
+(subs
+)
+(subs "blah" 1)
+(pop "blah")
+(re-find #"[ ]?(.*))
+(re-find #"[ ]?(.*)" "blah")
+(re-find #"[ ]?(.*)" " blah")
+(re-find #"[ ]?(.*)" "  blah")
+(re-find #"[ ]?(.*)" "blah")
+(last "blah")
+(subs -1 "blah")
+(subs "blah" -1)
+(subs "blah" 1)
+(subs "blah" _ 1)
+(split "blah" #"\n$")
+(split "blah\n" #"\n$")
+(split "blah\n" #"\\n$")
+(split "blah\n" #"\n$")
+(split "blah\n\n" #"\n$")
+(split "blah\n" #"\n$")
+(split "blah\n" #"\n$" 1)
+(split "blah\n" #"\n$")
+(split "blah" #"\n$")
+(split "blah\nfoo\nbar" #"\n$")
+(split "blah\nfoo\nbar\n" #"\n$")
+(split "blah\nfoo\nbar\n" #"^ ")
+(split " blah\nfoo\nbar\n" #"^ ")
+(or "" "woohoo")
+(= (first ":blah") \:)
