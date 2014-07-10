@@ -78,6 +78,7 @@
               event-name nil
               data-buffer "" 
               last-id ""]
+      (debug line)
       (cond
         (comment? line)
         (recur (.readLine reader) event-name data-buffer last-id)
