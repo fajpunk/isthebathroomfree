@@ -78,7 +78,6 @@
               event-name nil
               data-buffer "" 
               last-id ""]
-      (debug line)
       (cond
         (comment? line)
         (recur (.readLine reader) event-name data-buffer last-id)
@@ -93,7 +92,5 @@
         (let [[new-event-name new-data-buffer new-last-id] (process-field line event-name data-buffer last-id)]
           (recur (.readLine reader) new-event-name new-data-buffer new-last-id))
         
-        :else (do 
-                (debug "Unknown line type: " line)
-                (recur (.readLine reader) event-name data-buffer last-id))))
+        :else (recur (.readLine reader) event-name data-buffer last-id)))
     event-chan))

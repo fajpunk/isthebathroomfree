@@ -6,11 +6,13 @@
     [weasel.repl :as ws-repl]
     [clojure.string  :as str]
     [cljs.core.match]
-    [cljs.core.async :as async  :refer (<! >! put! chan)]
+    [ajax.core :refer [POST]]
     [taoensso.encore :as encore :refer (logf)]
     [taoensso.sente  :as sente  :refer (cb-success?)]))
 
 (enable-console-print!)
+
+;; WebSockets
 
 (let [{:keys [chsk ch-recv send-fn state]}
       (sente/make-channel-socket! "/chsk")]
@@ -38,3 +40,14 @@
 
 (defonce chsk-router
   (sente/start-chsk-router-loop! event-handler ch-chsk))
+
+;; Buttons
+
+(def buzz-button (.querySelector js/document "#hurry-up"))
+(def no-buzz-button (.querySelector js/document "#take-your-time"))
+
+(set! (.-onclick buzz-button)
+      (fn [] (POST "/start-buzzer")))
+
+(set! (.-onclick no-buzz-button)
+      (fn [] (POST "/stop-buzzer")))

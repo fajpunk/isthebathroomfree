@@ -1,5 +1,5 @@
 (ns itbf-web.core
-  (:require [org.httpkit.server :refer [run-server send! with-channel on-close]]
+  (:require [org.httpkit.server :refer [run-server]]
             [ring.middleware.reload :as reload]
             [compojure.handler :refer [site]]
             [compojure.core :refer [defroutes GET POST]]
@@ -14,6 +14,9 @@
             [clojure.core.match :refer [match]]
             [clojure.core.async :refer [go go-loop >! <! chan alt! alt!!]]))
 (timbre/refer-timbre)
+
+(def access-token (env :spark-access-token))
+(def device-id (env :spark-device-id))
 
 (defn in-dev? []
   (= "development" (env :rack-env)))
@@ -39,6 +42,8 @@
     [:body
      [:h2 "The bathroom door is:"]
      [:div#door-state]
+     [:button#hurry-up "Hurry up!"]
+     [:button#take-your-time "take-your-time"]
      [:script {:src "out/goog/base.js" :type "text/javascript"}]
      [:script {:src "itbf_web.js" :type "text/javascript"}]
      [:script {:type "text/javascript"} "goog.require(\"itbf_web.core\")"]]))
@@ -46,9 +51,10 @@
 (defroutes all-routes
   (GET "/" [] (index))
   (GET "/chsk" req (ring-ajax-get-or-ws-handshake req))
+  (POST "/start-buzzer" [] (do (client/start-buzzer access-token device-id) {:status 200}))
+  (POST "/stop-buzzer" [] (do (client/stop-buzzer access-token device-id) {:status 200}))
   (route/resources "/")
   (route/not-found "<p>Page not found.</p>"))
-
 
 (defn- push-door-state [state]
   (ds/set state)
@@ -65,8 +71,8 @@
       [:itbf/door-event {:door-state (ds/get)}])))
 
 (defn -main [port]
-  (defonce door-closed-chan (client/subscribe "door-closed" (env :spark-access-token)))
-  (defonce door-opened-chan (client/subscribe "door-opened" (env :spark-access-token)))
+  (defonce door-closed-chan (client/subscribe "door-closed" access-token))
+  (defonce door-opened-chan (client/subscribe "door-opened" access-token))
   (debug "Subscribed to spark channels")
 
   (defonce door-state-broadcaster
