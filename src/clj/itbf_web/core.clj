@@ -46,7 +46,7 @@
       [:img {:src "ajax-loader.gif"}]]
      [:div#buttons 
       [:button#hurry-up "Hurry up!"]
-      [:button#take-your-time "take-your-time"]]
+      [:button#take-your-time "Take your time"]]
      [:script {:src "out/goog/base.js" :type "text/javascript"}]
      [:script {:src "itbf_web.js" :type "text/javascript"}]
      [:script {:type "text/javascript"} "goog.require(\"itbf_web.core\")"]]))
