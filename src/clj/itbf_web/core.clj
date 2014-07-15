@@ -42,7 +42,8 @@
     [:head [:title "Is the bathroom free?"]]
     [:body
      [:h2 "The bathroom door is:"]
-     [:div#door-state]
+     [:div#door-state
+      [:img {:src "ajax-loader.gif"}]]
      [:div#buttons 
       [:button#hurry-up "Hurry up!"]
       [:button#take-your-time "take-your-time"]]
@@ -73,7 +74,9 @@
         [id data :as ev] event]
     (cond
       (= id :chsk/uidport-open) 
-      (do (chsk-send! uid [:itbf/door-event {:door-state (ds/get)}]))
+      (do 
+        (debug "Initializing door state to uid:" uid)
+        (chsk-send! uid [:itbf/door-event {:door-state (ds/get)}]))
       :else nil)))
 
 (defn -main [port]
