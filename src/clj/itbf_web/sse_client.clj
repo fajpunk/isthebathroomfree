@@ -85,6 +85,7 @@
         (blank-line? line)
         (do
           (when (not= data-buffer "")
+            (debug (build-event url event-name data-buffer last-id))
             (>! event-chan (build-event url event-name data-buffer last-id)))
           (recur (.readLine reader) nil "" last-id))
 

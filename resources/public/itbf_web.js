@@ -16,6 +16,10 @@ goog.addDependency("../cljs/core/async/impl/timers.js", ['cljs.core.async.impl.t
 goog.addDependency("../cljs/core/async.js", ['cljs.core.async'], ['cljs.core.async.impl.channels', 'cljs.core.async.impl.dispatch', 'cljs.core', 'cljs.core.async.impl.buffers', 'cljs.core.async.impl.protocols', 'cljs.core.async.impl.ioc_helpers', 'cljs.core.async.impl.timers']);
 goog.addDependency("../taoensso/encore.js", ['taoensso.encore'], ['goog.net.XhrIoPool', 'goog.net.XhrIo', 'goog.string', 'goog.Uri.QueryData', 'cljs.core', 'goog.string.StringBuffer', 'goog.net.EventType', 'goog.structs', 'goog.string.format', 'clojure.string', 'cljs.reader', 'goog.events', 'goog.net.ErrorCode']);
 goog.addDependency("../taoensso/sente.js", ['taoensso.sente'], ['cljs.core', 'cljs.core.async', 'clojure.string', 'taoensso.encore', 'cljs.reader']);
+goog.addDependency("../dommy/attrs.js", ['dommy.attrs'], ['cljs.core', 'clojure.string']);
+goog.addDependency("../dommy/template.js", ['dommy.template'], ['cljs.core', 'dommy.attrs', 'clojure.string']);
+goog.addDependency("../dommy/utils.js", ['dommy.utils'], ['cljs.core']);
+goog.addDependency("../dommy/core.js", ['dommy.core'], ['dommy.template', 'cljs.core', 'dommy.attrs', 'dommy.utils', 'clojure.string']);
 goog.addDependency("../cljs/core/match.js", ['cljs.core.match'], ['cljs.core']);
-goog.addDependency("../itbf_web/core.js", ['itbf_web.core'], ['ajax.core', 'weasel.repl', 'cljs.core', 'taoensso.sente', 'clojure.string', 'taoensso.encore', 'cljs.core.match']);
+goog.addDependency("../itbf_web/core.js", ['itbf_web.core'], ['ajax.core', 'weasel.repl', 'cljs.core', 'taoensso.sente', 'dommy.core', 'dommy.utils', 'clojure.string', 'taoensso.encore', 'cljs.core.match']);
 goog.addDependency("../itbf_web/connect.js", ['itbf_web.connect'], ['weasel.repl', 'cljs.core']);

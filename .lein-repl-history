@@ -189,3 +189,5 @@ split
 (split " blah\nfoo\nbar\n" #"^ ")
 (or "" "woohoo")
 (= (first ":blah") \:)
+(subs "5ca15ace-ab5a-4985-a446-76407cebe413-cbc78065-cc40-41e0-b17b-ac89bd707a22" 1 36)
+(subs "41674ba1-83fd-4952-bb2a-1b73070f7ba8-600cc40a-92df-42c7-ab33-eb9f7e3e5fdd" 1 36)

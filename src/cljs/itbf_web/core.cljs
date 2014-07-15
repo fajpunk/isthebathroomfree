@@ -1,19 +1,20 @@
 (ns itbf-web.core
   (:require-macros
     [cljs.core.match.macros :refer (match)]
-    [cljs.core.async.macros :as asyncm :refer (go go-loop)])
+    [cljs.core.async.macros :as asyncm :refer (go go-loop)]
+    [dommy.macros :refer [node sel sel1]])
   (:require
+    [dommy.utils :as utils]
+    [dommy.core :as dommy]
     [weasel.repl :as ws-repl]
     [clojure.string  :as str]
     [cljs.core.match]
     [ajax.core :refer [POST]]
     [taoensso.encore :as encore :refer (logf)]
     [taoensso.sente  :as sente  :refer (cb-success?)]))
-
 (enable-console-print!)
 
 ;; WebSockets
-
 (let [{:keys [chsk ch-recv send-fn state]}
       (sente/make-channel-socket! "/chsk")]
   (def chsk chsk)
@@ -24,9 +25,13 @@
 
 
 (defn- update-door-state [state]
-  (logf  "Updating door-state: %s" state)
-  (let [el (.querySelector js/document "#door-state")]
-    (set! (.-innerHTML el) state)))
+  (let [door-state-el (sel1 :#door-state)
+        buttons-el (sel1 :#buttons)]
+    (-> door-state-el
+        (dommy/set-text! state))
+    (if (= state "opened")
+      (dommy/hide! buttons-el)
+      (dommy/show! buttons-el))))
 
 
 (defn- event-handler [[id data :as ev] _]
@@ -42,12 +47,5 @@
   (sente/start-chsk-router-loop! event-handler ch-chsk))
 
 ;; Buttons
-
-(def buzz-button (.querySelector js/document "#hurry-up"))
-(def no-buzz-button (.querySelector js/document "#take-your-time"))
-
-(set! (.-onclick buzz-button)
-      (fn [] (POST "/start-buzzer")))
-
-(set! (.-onclick no-buzz-button)
-      (fn [] (POST "/stop-buzzer")))
+(dommy/listen! (sel1 :#hurry-up) :click #(POST "/start-buzzer"))
+(dommy/listen! (sel1 :#take-your-time) :click #(POST "/stop-buzzer"))

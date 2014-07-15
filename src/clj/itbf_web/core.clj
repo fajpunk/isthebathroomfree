@@ -14,6 +14,7 @@
             [clojure.core.match :refer [match]]
             [clojure.core.async :refer [go go-loop >! <! chan alt! alt!!]]))
 (timbre/refer-timbre)
+;(timbre/set-level! :trace)
 
 (def access-token (env :spark-access-token))
 (def device-id (env :spark-device-id))
@@ -28,7 +29,7 @@
 
 (let [{:keys [ch-recv send-fn ajax-post-fn ajax-get-or-ws-handshake-fn
               connected-uids]}
-      (sente/make-channel-socket! {})]
+      (sente/make-channel-socket! {:user-id-fn (fn [req] (encore/uuid-str))})]
   (def ring-ajax-post ajax-post-fn)
   (def ring-ajax-get-or-ws-handshake ajax-get-or-ws-handshake-fn)
   (def ch-chsk ch-recv) ; ChannelSocket's receive channel
@@ -42,8 +43,9 @@
     [:body
      [:h2 "The bathroom door is:"]
      [:div#door-state]
-     [:button#hurry-up "Hurry up!"]
-     [:button#take-your-time "take-your-time"]
+     [:div#buttons 
+      [:button#hurry-up "Hurry up!"]
+      [:button#take-your-time "take-your-time"]]
      [:script {:src "out/goog/base.js" :type "text/javascript"}]
      [:script {:src "itbf_web.js" :type "text/javascript"}]
      [:script {:type "text/javascript"} "goog.require(\"itbf_web.core\")"]]))
@@ -58,17 +60,21 @@
 
 (defn- push-door-state [state]
   (ds/set state)
-  (chsk-send! nil
-              [:itbf/door-event
-               {:door-state state}]))
+  (doseq [uid (:any @connected-uids)]
+    (debug "Pushing door-state to uid:" uid)
+    (chsk-send! uid
+                [:itbf/door-event
+                 {:door-state state}])))
 
 (defn- event-handler
   [{:as ev-msg :keys [ring-req event ?reply-fn]} _]
   (let [session (:session ring-req)
-        uid     (:uid session)
+        uid (subs (:client-uuid ev-msg) 0 36) ; Apparently, this gets truncated :(
         [id data :as ev] event]
-    (chsk-send! uid
-      [:itbf/door-event {:door-state (ds/get)}])))
+    (cond
+      (= id :chsk/uidport-open) 
+      (do (chsk-send! uid [:itbf/door-event {:door-state (ds/get)}]))
+      :else nil)))
 
 (defn -main [port]
   (defonce door-closed-chan (client/subscribe "door-closed" access-token))
@@ -78,9 +84,14 @@
   (defonce door-state-broadcaster
     (go
       (while true
-        (alt!
-          [door-closed-chan] (push-door-state "closed")
-          [door-opened-chan] (push-door-state "opened")))))
+        (<! door-closed-chan)
+        (push-door-state "closed"))))
+
+  (defonce door-state-broadcaster2
+    (go
+      (while true
+        (<! door-opened-chan)
+        (push-door-state "opened"))))
 
   (defonce chsk-router
     (sente/start-chsk-router-loop! event-handler ch-chsk))

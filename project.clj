@@ -23,6 +23,8 @@
                  [hiccup "1.0.5"]
                  [instaparse  "1.3.2"]
                  [cljs-ajax "0.2.6"]
+                 [cljs-uuid "0.0.4"]
+                 [prismatic/dommy  "0.1.2"]
                  [org.clojure/core.match "0.2.1"]]
 
   :main itbf-web.core
