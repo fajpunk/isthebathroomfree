@@ -41,7 +41,7 @@
   (html
     [:head [:title "Is the bathroom free?"]]
     [:body
-     [:h2 "The bathroom door is:"]
+     [:h2 "The bathroom is:"]
      [:div#door-state
       [:img {:src "ajax-loader.gif"}]]
      [:div#buttons 

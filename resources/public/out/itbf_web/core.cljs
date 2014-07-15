@@ -24,11 +24,12 @@
   )
 
 
+(def state-map {"closed" "Occupied :(" "opened" "Free!!"})
 (defn- update-door-state [state]
   (let [door-state-el (sel1 :#door-state)
         buttons-el (sel1 :#buttons)]
     (-> door-state-el
-        (dommy/set-text! state))
+        (dommy/set-text! (get state-map state)))
     (if (= state "opened")
       (dommy/hide! buttons-el)
       (dommy/show! buttons-el))))
