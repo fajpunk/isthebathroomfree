@@ -80,8 +80,8 @@
       :else nil)))
 
 (defn -main [port]
-  (defonce door-closed-chan (client/subscribe "door-closed" access-token))
-  (defonce door-opened-chan (client/subscribe "door-opened" access-token))
+  (defonce door-closed-chan (first (client/subscribe "door-closed" access-token)))
+  (defonce door-opened-chan (first (client/subscribe "door-opened" access-token)))
   (debug "Subscribed to spark channels")
 
   (defonce door-state-broadcaster

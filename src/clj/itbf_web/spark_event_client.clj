@@ -2,8 +2,8 @@
   (:require [clojure.data.json :as json]
             [org.httpkit.client :as http]
             [taoensso.timbre :as timbre]
-            [environ.core :refer  [env]]
-            [itbf-web.sse-client :as sse]))
+            [environ.core :refer [env]]
+            [diane.client :as client]))
 (timbre/refer-timbre)
 
 (defn- event-url [event-name]
@@ -18,9 +18,8 @@
 (defn- headers [access-token]
   {"Authorization" (str "Bearer " access-token)})
 
-
 (defn subscribe [event-name access-token]
-  (sse/subscribe (event-url event-name) {:headers (headers access-token)}))
+  (client/subscribe (event-url event-name) {:headers (headers access-token)}))
 
 (defn start-buzzer [access-token device-id]
   (call-function access-token device-id "buzzer_on"))

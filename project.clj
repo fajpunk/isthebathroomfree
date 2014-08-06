@@ -25,6 +25,7 @@
                  [cljs-ajax "0.2.6"]
                  [cljs-uuid "0.0.4"]
                  [prismatic/dommy  "0.1.2"]
+                 [diane "1.0.0"]
                  [org.clojure/core.match "0.2.1"]]
 
   :main itbf-web.core
